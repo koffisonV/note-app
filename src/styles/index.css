@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pastel-yellow: #F9E4B7;
+  --color-pastel-green: #D4EDDA;
+  --color-pastel-blue: #D1ECF1;
+  --color-pastel-pink: #F8D7DA;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
