@@ -7,7 +7,7 @@ export function DashboardLayout() {
   const isOnline = useOnlineStatus();
 
   return (
-    <div className={`flex h-screen flex-col bg-white ${!isOnline ? 'pt-9' : ''}`}>
+    <div className={`flex h-dvh flex-col overflow-hidden bg-white ${!isOnline ? 'pt-9' : ''}`}>
       <OfflineBanner />
       <div className="flex min-h-0 flex-1">
         <Sidebar />

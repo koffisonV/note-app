@@ -7,10 +7,21 @@
   --color-pastel-pink: #F8D7DA;
 }
 
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@supports not (height: 100dvh) {
+  .h-dvh {
+    height: 100%;
+  }
 }
 
 .tiptap-editor .tiptap {

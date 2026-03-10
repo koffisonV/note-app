@@ -30,7 +30,7 @@ export function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-dvh items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
@@ -38,7 +38,7 @@ export function DashboardPage() {
 
   if (!isOnline && notes.length === 0) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4 p-8 text-center">
+      <div className="flex h-dvh flex-col items-center justify-center gap-4 p-8 text-center">
         <p className="text-lg font-medium text-gray-500">
           You are offline. Please connect to the internet to load your notes.
         </p>

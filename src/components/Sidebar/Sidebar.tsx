@@ -73,9 +73,8 @@ export function Sidebar() {
 
       {/* Sidebar panel */}
       <aside
-        className={`fixed left-0 top-0 z-40 flex h-full w-72 flex-col border-r border-gray-100 bg-white transition-transform duration-200 md:relative md:z-0 md:w-80 md:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed left-0 top-0 z-40 flex h-full w-72 flex-col border-r border-gray-100 bg-white transition-transform duration-200 md:relative md:z-0 md:w-80 md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
         aria-label="Sidebar"
       >
         <div className="flex shrink-0 items-center gap-2 border-b border-gray-100 py-4 pl-14 pr-5 md:px-5">

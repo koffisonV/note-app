@@ -99,6 +99,13 @@ These function are deployed behind an API Gateway with a Cognito authorizer. Eac
 - **Planning:** Defined the architecture, data model, and component tree. Set up Vite, Tailwind, Zustand, Amplify SDK, and React Router.
 - **Auth flow:** Built login, sign-up, and email confirmation forms wired to Cognito.
 - **Dashboard & editor:** Built the sidebar with search, colored note cards, and a text editor. 
+- **Database:** Built the DynamoDB table to store the notes.
 - **API Gateway:** Built the API Gateway to serve REST API requests to the Lambda functions.
 - **Lambda handlers:** Built five handlers with input validation, error handling, and CORS headers on every response path.
 - **Deployment:** Deployed the backend to AWS using Amplify CLI.
+
+--------------------------------
+
+<p align="center">
+Authored by Koffison V.
+</p>
