@@ -9,7 +9,8 @@ interface NoteCardProps {
 }
 
 export function NoteCard({ note, isActive, onSelect, onDelete }: NoteCardProps) {
-  const preview = note.content.slice(0, 80).replace(/\n/g, ' ') || 'Empty note';
+  const stripped = note.content.replace(/<[^>]*>/g, '').trim();
+  const preview = stripped ? stripped.slice(0, 80).replace(/\n/g, ' ') : 'Empty note';
   const lastEdited = new Date(note.lastEdited).toLocaleDateString('en-US', {
     month: '2-digit',
     day: '2-digit',
@@ -22,14 +23,14 @@ export function NoteCard({ note, isActive, onSelect, onDelete }: NoteCardProps) 
       tabIndex={0}
       onClick={() => onSelect(note.noteId)}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect(note.noteId); }}
-      className={`group relative w-full cursor-pointer rounded-2xl p-4 text-left transition-all hover:shadow-md ${
-        isActive ? 'ring-2 ring-indigo-300 shadow-md' : 'hover:scale-[1.02]'
+      className={`relative w-full cursor-pointer rounded-xl p-3 text-left transition-all hover:shadow-md ${
+        isActive ? 'ring-2 ring-indigo-300 shadow-md' : 'hover:scale-[1.01]'
       }`}
       style={{ backgroundColor: note.color }}
       aria-label={note.title || 'Untitled'}
     >
-      <div className="mb-2 flex items-start justify-between">
-        <h3 className="line-clamp-1 pr-6 text-sm font-semibold text-gray-800">
+      <div className="mb-1 flex items-start justify-between gap-2">
+        <h3 className="line-clamp-1 text-sm font-semibold text-gray-800">
           {note.title || 'Untitled'}
         </h3>
         <button
@@ -37,19 +38,19 @@ export function NoteCard({ note, isActive, onSelect, onDelete }: NoteCardProps) 
             e.stopPropagation();
             onDelete(note.noteId);
           }}
-          className="absolute right-3 top-3 rounded-lg p-1 opacity-0 transition-opacity hover:bg-black/10 group-hover:opacity-100"
+          className="shrink-0 rounded-full p-1 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
           aria-label={`Delete ${note.title}`}
         >
-          <FaTrash className="h-3 w-3 text-gray-600" />
+          <FaTrash className="h-2.5 w-2.5" />
         </button>
       </div>
 
-      <p className="mb-3 line-clamp-2 text-xs leading-relaxed text-gray-600">
+      <p className="mb-2 line-clamp-1 text-xs leading-relaxed text-gray-600">
         {preview}
       </p>
 
       {note.tags.length > 0 && (
-        <div className="mb-2 flex flex-wrap gap-1">
+        <div className="mb-1.5 flex flex-wrap gap-1">
           {note.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}

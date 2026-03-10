@@ -1,19 +1,12 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
 import { useNoteStore } from '@/store/noteStore';
-import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { useDebounce } from '@/hooks/useDebounce';
 import { EditorToolbar } from './EditorToolbar';
 import { SyncStatus } from './SyncStatus';
-import {
-  applyFormat,
-  wrapBold,
-  wrapItalic,
-  wrapUnderline,
-  toBulletList,
-  toNumberedList,
-} from '@/utils/markdown';
-import { FaPlus, FaTag, FaXmark } from 'react-icons/fa6';
-import { useState } from 'react';
+import { FaPlus, FaPenToSquare, FaTag, FaXmark } from 'react-icons/fa6';
 
 const DEBOUNCE_MS = 1000;
 
@@ -24,55 +17,47 @@ export function NoteEditor() {
   const saveNote = useNoteStore((s) => s.saveNote);
   const createNote = useNoteStore((s) => s.createNote);
   const syncState = useNoteStore((s) => s.syncState);
-  const isOnline = useOnlineStatus();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [tagInput, setTagInput] = useState('');
+  const activeNoteIdRef = useRef(activeNoteId);
 
   const note = getActiveNote();
 
+  const editor = useEditor({
+    extensions: [StarterKit, Underline],
+    content: note?.content || '',
+    onUpdate: ({ editor }) => {
+      const noteId = activeNoteIdRef.current;
+      if (!noteId) return;
+      updateNote(noteId, { content: editor.getHTML() });
+    },
+  });
+
+  useEffect(() => {
+    activeNoteIdRef.current = activeNoteId;
+  }, [activeNoteId]);
+
+  useEffect(() => {
+    if (!editor) return;
+    const content = note?.content || '';
+    editor.commands.setContent(content);
+  }, [editor, activeNoteId]);
+
   const debouncedSave = useCallback(() => {
-    if (activeNoteId && isOnline) {
+    if (activeNoteId) {
       saveNote(activeNoteId);
     }
-  }, [activeNoteId, isOnline, saveNote]);
+  }, [activeNoteId, saveNote]);
 
-  useDebounce(debouncedSave, DEBOUNCE_MS, [note?.content, note?.title]);
-
-  function handleContentChange(value: string) {
-    if (!activeNoteId) return;
-    updateNote(activeNoteId, { content: value });
-  }
+  useDebounce(debouncedSave, DEBOUNCE_MS, [
+    note?.content,
+    note?.title,
+    JSON.stringify(note?.tags),
+    note?.color,
+  ]);
 
   function handleTitleChange(value: string) {
     if (!activeNoteId) return;
     updateNote(activeNoteId, { title: value });
-  }
-
-  function handleFormat(type: 'bold' | 'italic' | 'underline' | 'bullet' | 'numbered') {
-    const textarea = textareaRef.current;
-    if (!textarea || !activeNoteId) return;
-
-    const formatters = {
-      bold: wrapBold,
-      italic: wrapItalic,
-      underline: wrapUnderline,
-      bullet: toBulletList,
-      numbered: toNumberedList,
-    };
-
-    const result = applyFormat(
-      textarea.value,
-      textarea.selectionStart,
-      textarea.selectionEnd,
-      formatters[type],
-    );
-
-    updateNote(activeNoteId, { content: result.value });
-
-    requestAnimationFrame(() => {
-      textarea.focus();
-      textarea.setSelectionRange(result.selectionStart, result.selectionEnd);
-    });
   }
 
   function handleAddTag() {
@@ -100,8 +85,7 @@ export function NoteEditor() {
           </p>
           <button
             onClick={() => createNote()}
-            disabled={!isOnline}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-600 disabled:opacity-50"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-600"
           >
             <FaPlus className="h-3.5 w-3.5" />
             New Note
@@ -120,8 +104,8 @@ export function NoteEditor() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-        <div className="flex-1">
+      <div className="flex items-center justify-between border-b border-gray-100 py-4 pl-14 pr-6 md:px-6">
+        <div className="min-w-0 flex-1">
           <input
             type="text"
             value={note.title}
@@ -131,39 +115,32 @@ export function NoteEditor() {
             aria-label="Note title"
           />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           <SyncStatus status={syncState} />
           <button
             onClick={() => createNote()}
-            disabled={!isOnline}
-            className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-gray-900 p-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 md:px-4"
+            aria-label="Create new note"
           >
-            Create
-            <div
-              className="h-4 w-4 rounded"
-              style={{ backgroundColor: note.color }}
-            />
+            <span className="hidden md:inline">Create</span>
+            <FaPenToSquare className="h-4 w-4" />
           </button>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="flex items-center gap-4 border-b border-gray-100 px-6 py-2">
-        <EditorToolbar onFormat={handleFormat} />
+      <div className="flex items-center gap-4 border-b border-gray-100 px-4 py-2 md:px-6">
+        <EditorToolbar editor={editor} />
       </div>
 
       {/* Editor area */}
-      <textarea
-        ref={textareaRef}
-        value={note.content}
-        onChange={(e) => handleContentChange(e.target.value)}
-        className="flex-1 resize-none bg-gray-50 p-6 font-mono text-sm leading-relaxed text-gray-800 outline-none placeholder:text-gray-300"
-        placeholder="Start writing your note in Markdown..."
-        aria-label="Note content"
+      <EditorContent
+        editor={editor}
+        className="tiptap-editor flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6"
       />
 
-      {/* Footer: tags + timestamp */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-6 py-3">
+      {/* Footer */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-4 py-3 md:px-6">
         <div className="flex flex-wrap items-center gap-2">
           {note.tags.map((tag) => (
             <span

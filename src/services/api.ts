@@ -79,11 +79,6 @@ export async function fetchNotes(): Promise<Note[]> {
   return data.notes;
 }
 
-export async function fetchNote(noteId: string): Promise<Note> {
-  const data = await request<NoteResponse>(`/notes/${noteId}`);
-  return data.note;
-}
-
 export async function createNote(note: CreateNoteRequest): Promise<Note> {
   const data = await request<NoteResponse>('/notes', {
     method: 'POST',

@@ -17,8 +17,8 @@ export function ConfirmForm({ email, onConfirmed }: ConfirmFormProps) {
     try {
       await confirmAccount(email, code);
       onConfirmed();
-    } catch {
-      // error is set in the store
+    } catch (error) {
+      console.error('Error confirming account:', error);
     }
   }
 
