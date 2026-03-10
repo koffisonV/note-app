@@ -4,7 +4,6 @@ import { LoginForm } from '@/components/Auth/LoginForm';
 import { SignUpForm } from '@/components/Auth/SignUpForm';
 import { ConfirmForm } from '@/components/Auth/ConfirmForm';
 import { useAuth } from '@/hooks/useAuth';
-import { FaNoteSticky } from 'react-icons/fa6';
 
 type AuthView = 'login' | 'signup' | 'confirm';
 
@@ -29,8 +28,12 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
       <div className="flex w-full max-w-sm flex-col items-center">
-        <div className="mb-8 flex items-center gap-2">
-          <FaNoteSticky className="h-8 w-8 text-indigo-500" />
+        <div className="mb-8 flex items-center gap-3">
+          <img
+            src="/notes-app-logo.png"
+            alt="NoteApp"
+            className="h-12 w-12 object-contain"
+          />
           <span className="text-2xl font-bold text-gray-900">NoteApp</span>
         </div>
 
