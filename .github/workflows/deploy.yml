@@ -30,9 +30,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create Amplify config
-        run: echo '${{ secrets.AMPLIFY_CONFIG }}' > src/amplifyconfiguration.json
-
       - name: Build
         run: npm run build
         env:
