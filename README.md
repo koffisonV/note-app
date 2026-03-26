@@ -42,7 +42,7 @@ Sensitive configuration like the Cognito User Pool ID and App Client ID is fetch
 
 All note data lives in an in-memory Zustand store. There is no localStorage, IndexedDB, or service worker cache. Notes are fetched once when the dashboard mounts, and subsequent reads come from memory.
 
-Cache invalidation is implicit: any edit marks the note dirty, and the debounced save pushes the latest snapshot to the server. There is no background polling or revalidation because the client treats its own state ndependently until the next full page load. This keeps Lambda invocations low since edits are batched into one save per quiet second, and only dirty notes trigger network requests.
+Cache invalidation is implicit: any edit marks the note dirty, and the debounced save pushes the latest snapshot to the server. There is no background polling or revalidation because the client treats its own state independently until the next full page load. This keeps Lambda invocations low since edits are batched into one save per quiet second, and only dirty notes trigger network requests.
 
 ## Network Error Handling
 

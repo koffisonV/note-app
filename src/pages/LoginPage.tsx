@@ -26,7 +26,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-indigo-50 via-white to-purple-50 px-4">
       <div className="flex w-full max-w-sm flex-col items-center">
         <div className="mb-8 flex items-center gap-3">
           <img
